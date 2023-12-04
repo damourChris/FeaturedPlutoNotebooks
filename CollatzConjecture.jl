@@ -14,70 +14,39 @@ macro bind(def, element)
     end
 end
 
-# ╔═╡ 956cbcbe-f1d3-4492-bb70-0eb021f2355a
-using FixedPointNumbers 
-
-# ╔═╡ 5430d55c-d2a1-4312-8d23-eda17be9b08f
-using Collatz
-
 # ╔═╡ ef17d91f-04c5-43db-811e-d228495384dc
-using PlutoUI
+begin
+	# Notebook related packages
+	using PlutoUI
+	using PlutoHooks
+	import PlutoUI: combine
+	using HypertextLiteral:@htl
 
-# ╔═╡ 0047d9d8-3385-4c94-8783-5ee2f6795245
-using PlutoHooks
-
-# ╔═╡ e3c45c98-3c29-48a1-b0dc-3c027fe6dd63
-using HypertextLiteral:@htl
+	TableOfContents()
+end
 
 # ╔═╡ b7831999-3268-40fc-83d3-cd1290beaa4c
 begin
-	using Plots
+	using Plots, Graphs
+	using Colors,Luxor, Karnak, NetworkLayout
 	plotly()
 end
 
-# ╔═╡ ece8e623-4b88-4d6a-a457-c1d6f6676dc3
-using Graphs
-
-# ╔═╡ 898f9272-cd54-4d04-b595-9db81ccbbbaa
-using Luxor, Karnak, NetworkLayout
+# ╔═╡ 5430d55c-d2a1-4312-8d23-eda17be9b08f
+# Numerical packages
+using Collatz, FixedPointNumbers 
 
 # ╔═╡ fbbc2012-9177-11ee-2e5a-ff0b0713875d
 md"# The Collatz Conjecture"
 
-# ╔═╡ 0229aa1a-a4a1-49fc-9ad2-41cab7a8cd27
-import PlutoUI: combine
-
-# ╔═╡ 0a6312de-192e-4d02-b617-59c413994a27
-# ╠═╡ disabled = true
-#=╠═╡
-using Colors
-  ╠═╡ =#
-
-# ╔═╡ d3bf513a-a02d-497f-84b0-4fb2d49421e8
-TableOfContents()
-
 # ╔═╡ 822a3646-be9d-4b1c-a189-550bd8b56ab7
 md"# Introduction"
 
-# ╔═╡ c9a99bc9-b759-420e-9d72-6d4493774540
-@bind start_value Slider(1:1000, show_value = true)
-
-# ╔═╡ 66fe673a-7679-4c55-bf59-146a8dd1241c
-begin
-	hailstone_seq = hailstone_sequence(start_value; P = 2, a = 3, b =1, verbose=false)
-	# hailstone_seq = hailstone_sequence(start_value; collatz_parameters.P,collatz_parameters.a, collatz_parameters.b, verbose=false)
-	plot(hailstone_seq, leg = false)
-	xlabel!("Iterations")
-	ylabel!("Value")
-	title!("Hailstone sequence of: $start_value")
-	scatter!(hailstone_seq)
-end
-
-# ╔═╡ 43c4fd8d-bb44-43cd-91dd-d221629d1fd9
-
+# ╔═╡ 6f68b20d-67e5-4872-a23b-1840bbbb06ec
+md"## The concept of stopping time"
 
 # ╔═╡ 4f8d2d6c-d55b-4072-993e-1f9ed537f9bd
-stopping_times = [stopping_time(d) for d in range(1,100000)]
+stopping_times = [stopping_time(d) for d in range(1,100)]
 
 # ╔═╡ b5fb1fa3-a205-42e9-9fb7-2f3324dc23be
 plot(stopping_times)
@@ -119,7 +88,7 @@ typeof(d)
 
 
 # ╔═╡ b3754b38-306d-4214-84e4-f8ab3393c0e3
-
+?tree_graph
 
 # ╔═╡ 3153ba89-f2d4-4e31-9e79-00ec5ecbb91c
 function descend_tree!(g::SimpleGraph{Int64}, record::Array{Number},  tree::Dict, previous::Number=collect(keys(tree))[1], level::Int=0)
@@ -253,6 +222,41 @@ function format_sliderParameter( params::Vector{SliderParameter};title::String,)
 	end
 end
 
+# ╔═╡ 43c4fd8d-bb44-43cd-91dd-d221629d1fd9
+begin
+graph_sliders = @bind graph_parameters format_sliderParameter(title="Collatz Graph Parameters:",[
+	SliderParameter(lb=1,ub=10000,default=15,alias=:start_value,label="Starting Value"),
+	SliderParameter(lb=1,ub=25,default=5,alias=:orbit,label="Maximum Orbit")
+	
+])
+	graph_extra_sliders =@bind graph_extra_parameters format_sliderParameter(title="Extra Options",
+	[
+		SliderParameter(lb=0,ub=360,default=0,alias=:rotation,label="Graph Rotation")
+	])
+
+	@htl("""
+	<div class="slider_group">
+	<div>
+		$graph_sliders
+	</div>
+	<div>
+		$graph_extra_sliders
+	</div>
+	</div>
+	""")
+end
+
+# ╔═╡ 66fe673a-7679-4c55-bf59-146a8dd1241c
+begin
+	hailstone_seq = hailstone_sequence(graph_parameters.start_value; P = 2, a = 3, b =1, verbose=false)
+	# hailstone_seq = hailstone_sequence(start_value; collatz_parameters.P,collatz_parameters.a, collatz_parameters.b, verbose=false)
+	plot(hailstone_seq, leg = false)
+	xlabel!("Iterations")
+	ylabel!("Value")
+	title!("Hailstone sequence of: $(graph_parameters.start_value)")
+	scatter!(hailstone_seq)
+end
+
 # ╔═╡ f21f1e3e-a3ab-458e-a101-ce824731f0b6
 begin
 collatz_sliders = @bind collatz_parameters format_sliderParameter(title="Collatz Parameters:",[
@@ -263,28 +267,36 @@ collatz_sliders = @bind collatz_parameters format_sliderParameter(title="Collatz
 	collatz_sliders
 end
 
-# ╔═╡ 54071e33-6c57-427e-a997-f31df24699c4
-collatz_sliders
-
-# ╔═╡ 30b8db4f-2d8b-430b-ab6d-d7a91ef2c9ef
+# ╔═╡ 6693800b-e2bc-46e4-b5f8-004184ef472b
 begin
+	g, record = make_collatz_graph(
+		graph_parameters.start_value,
+		graph_parameters.orbit;
+			collatz_parameters.P,collatz_parameters.a,collatz_parameters.b
+	)
 	
-	stopping_point = 10
-	g, record = make_collatz_graph(start_value,stopping_point;collatz_parameters.P,collatz_parameters.a,collatz_parameters.b)
-	
-	@drawsvg begin
+	graph_colors = [RGB(rand(3)...) 
+		               for i in 1:nv(g)]
+end;
+
+# ╔═╡ 3550fe19-261e-4069-9bf6-6417dcaac102
+begin
+	a = @drawsvg begin
     background("white")
     sethue("grey40")
     fontsize(35)
+	Karnak.rotate(deg2rad(graph_extra_parameters.rotation))
     drawgraph(g, 
 		layout=Stress(),
+		margin = 60,                         
         vertexlabels = record,
 		vertexshapesizes = 40,
-        vertexfillcolors = 
-            [RGB(rand(3)/2...) 
-               for i in 1:nv(g)]
+        vertexfillcolors = graph_colors
     )
+			
 end 1600 1200
+			
+			a
 end
 
 # ╔═╡ a7885279-3f73-4c5d-aeef-061dea1ce930
@@ -336,7 +348,7 @@ function format_colorPicker( params::Vector{ColorParameter};title::String)
 	end
 end
 
-# ╔═╡ d3eb8c27-c159-4e88-a788-600df7ec2c6e
+# ╔═╡ a52781ec-98ba-4c0f-8f50-87d351a017b8
 begin
 	colors_sliders = @bind viz_colors_options format_colorPicker(
 	[
@@ -354,11 +366,9 @@ viz_sliders = @bind viz_parameters format_sliderParameter(title="Visualization P
 	SliderParameter(lb = 0, ub = window_width, default = window_width/2, step = 0.1, alias = :x_start, label = "Starting point (X)"),
 	SliderParameter(lb = 0, ub = window_height, default = window_height, step = 0.1, alias = :y_start, label = "Starting point (Y)"),
 ])
-end;
-
-# ╔═╡ a52781ec-98ba-4c0f-8f50-87d351a017b8
-@htl("""
-	<div style="display:flex; align-items:center; padding: .5rem; gap: 2rem">
+	
+	@htl("""
+	<div class="slider_group">
 		<div>
 			$viz_sliders
 		</div>
@@ -367,6 +377,7 @@ end;
 		</div>
 	</div>
 	""")
+end
 
 # ╔═╡ 762a90fe-8ee7-409e-b29e-e721e5fa3931
 begin
@@ -388,7 +399,7 @@ begin
 		if(extra_viz_options.rand_shade)
 			Pencolor(🐢,RGB(rand(), rand(), rand()))
 		elseif extra_viz_options.vary_shade
-			color_offset = rescale(rand(), 0,1,-1,1)
+			color_offset = randn()
 			Pencolor(🐢,RGB(viz_colors_options.stroke.r + color_offset, viz_colors_options.stroke.g + color_offset, viz_colors_options.stroke.b + color_offset))
 		else
 			Pencolor(🐢,viz_colors_options.stroke)
@@ -437,10 +448,25 @@ begin
 	
 end
 
+# ╔═╡ 7baab6e9-31bb-4da5-8ab9-938546cc863e
+@htl("""
+
+<style>
+.slider_group{
+	display:flex; 
+	align-items:center; 
+	padding: .5rem; 
+	gap: 2rem
+}
+</style>
+
+""")
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 Collatz = "93a6299e-2ed6-4a7f-9f14-000d52f8d402"
+Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
 FixedPointNumbers = "53c48c17-4a7d-5ca2-90c5-79b7896eea93"
 Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
 HypertextLiteral = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
@@ -453,6 +479,7 @@ PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
 Collatz = "~1.0.0"
+Colors = "~0.12.10"
 FixedPointNumbers = "~0.8.4"
 Graphs = "~1.9.0"
 HypertextLiteral = "~0.9.5"
@@ -470,7 +497,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.9.2"
 manifest_format = "2.0"
-project_hash = "4c734ca640162fcbad64085e462efbb517904d01"
+project_hash = "4aa98abf8c69f3c0ca33c0bc6de16cbd62d90343"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
@@ -1796,27 +1823,18 @@ version = "1.4.1+1"
 
 # ╔═╡ Cell order:
 # ╟─fbbc2012-9177-11ee-2e5a-ff0b0713875d
-# ╠═956cbcbe-f1d3-4492-bb70-0eb021f2355a
-# ╠═5430d55c-d2a1-4312-8d23-eda17be9b08f
 # ╠═ef17d91f-04c5-43db-811e-d228495384dc
-# ╠═0047d9d8-3385-4c94-8783-5ee2f6795245
-# ╠═0229aa1a-a4a1-49fc-9ad2-41cab7a8cd27
-# ╠═e3c45c98-3c29-48a1-b0dc-3c027fe6dd63
 # ╠═b7831999-3268-40fc-83d3-cd1290beaa4c
-# ╠═ece8e623-4b88-4d6a-a457-c1d6f6676dc3
-# ╠═0a6312de-192e-4d02-b617-59c413994a27
-# ╠═898f9272-cd54-4d04-b595-9db81ccbbbaa
-# ╠═d3bf513a-a02d-497f-84b0-4fb2d49421e8
-# ╠═822a3646-be9d-4b1c-a189-550bd8b56ab7
-# ╟─54071e33-6c57-427e-a997-f31df24699c4
+# ╠═5430d55c-d2a1-4312-8d23-eda17be9b08f
+# ╟─822a3646-be9d-4b1c-a189-550bd8b56ab7
 # ╟─66fe673a-7679-4c55-bf59-146a8dd1241c
-# ╠═c9a99bc9-b759-420e-9d72-6d4493774540
-# ╠═43c4fd8d-bb44-43cd-91dd-d221629d1fd9
-# ╠═30b8db4f-2d8b-430b-ab6d-d7a91ef2c9ef
+# ╟─43c4fd8d-bb44-43cd-91dd-d221629d1fd9
+# ╟─6693800b-e2bc-46e4-b5f8-004184ef472b
+# ╟─3550fe19-261e-4069-9bf6-6417dcaac102
+# ╠═6f68b20d-67e5-4872-a23b-1840bbbb06ec
 # ╠═4f8d2d6c-d55b-4072-993e-1f9ed537f9bd
 # ╠═b5fb1fa3-a205-42e9-9fb7-2f3324dc23be
 # ╟─f21f1e3e-a3ab-458e-a101-ce824731f0b6
-# ╟─d3eb8c27-c159-4e88-a788-600df7ec2c6e
 # ╟─a52781ec-98ba-4c0f-8f50-87d351a017b8
 # ╟─6d225dce-3362-4f5d-bba9-0b5312f6be5a
 # ╟─c0e11c73-71db-492e-9666-908616fcd7b3
@@ -1844,5 +1862,6 @@ version = "1.4.1+1"
 # ╠═a7885279-3f73-4c5d-aeef-061dea1ce930
 # ╠═3f7b62d9-a7a5-48bf-b051-f01a28aba489
 # ╠═2d98aed3-9a51-4225-b914-a20b19f43908
+# ╠═7baab6e9-31bb-4da5-8ab9-938546cc863e
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

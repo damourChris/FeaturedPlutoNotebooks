@@ -42,26 +42,6 @@ md"# The Collatz Conjecture"
 # ╔═╡ 822a3646-be9d-4b1c-a189-550bd8b56ab7
 md"# Introduction"
 
-# ╔═╡ 3550fe19-261e-4069-9bf6-6417dcaac102
-begin
-	a = @drawsvg begin
-    background("white")
-    sethue("grey40")
-    fontsize(35)
-	Karnak.rotate(deg2rad(graph_extra_parameters.rotation))
-    drawgraph(g, 
-		layout=Stress(),
-		margin = 60,                         
-        vertexlabels = record,
-		vertexshapesizes = 40,
-        vertexfillcolors = graph_colors
-    )
-			
-end 1600 1200
-			
-			a
-end
-
 # ╔═╡ 6f68b20d-67e5-4872-a23b-1840bbbb06ec
 md"## The concept of stopping time"
 
@@ -70,25 +50,6 @@ stopping_times = [stopping_time(d) for d in range(1,100)]
 
 # ╔═╡ b5fb1fa3-a205-42e9-9fb7-2f3324dc23be
 plot(stopping_times)
-
-# ╔═╡ 6d225dce-3362-4f5d-bba9-0b5312f6be5a
-begin
-	let 
-		state, set_state = @use_state(nothing)
-		@use_effect([trajectories, viz_parameters, viz_colors_options,extra_viz_options]) do
-		 	viz = @draw begin
-				background(viz_colors_options.background)
-				sethue("white")
-				setline(1)
-			    draw_curved_trajectories(trajectories,viz_parameters.step, viz_parameters.step_angle)
-			end window_width window_height
-			
-			set_state(viz)
-		end
-		state
-	end
-	
-end
 
 # ╔═╡ 0865f8a3-a959-481b-a9ae-adbca78a2749
 begin
@@ -110,34 +71,6 @@ md"Interesting Values to try out:
 
 # ╔═╡ cdfb638b-a04c-482c-9206-47f7dfd63766
 md"# Appendix"
-
-# ╔═╡ 319d784b-c62d-4f28-a5b3-ebf89c892afc
-"""
-This function returns a graph that represent the different branches that each number takes.
-
-## Args
-```
-initial_value::Integer: The starting value of the directed tree graph.
-
-max_orbit_distance::Integer: Degree of seperation between the initial value and each value encountered. 
-```
-More info [here](https://docs.juliahub.com/Collatz/UmeZE/1.0.0/functions/#Collatz.tree_graph)
-## Kwargs
-```
-P::Integer=2: Modulus used to devide n, iff n is equivalent to (0 mod P).
-
-a::Integer=3: Factor by which to multiply n.
-
-b::Integer=1: Value to add to the scaled value of n.
-```
-"""
-function make_collatz_graph(initial_value::Int, max_orbit_distance::Int; P=2, a=3, b=1)
-	g = SimpleGraph()
-	record::Array{Number} = []
-	tree = tree_graph(initial_value,max_orbit_distance; P, a,b )
-	descend_tree!(g, record, tree)
-	return g, record
-end
 
 # ╔═╡ 3153ba89-f2d4-4e31-9e79-00ec5ecbb91c
 """
@@ -200,42 +133,32 @@ function descend_tree!(g::SimpleGraph{Int64}, record::Array{Number},  key::Int64
 	return
 end
 
-# ╔═╡ 278572e6-5a74-4dad-b39b-68cc85e4339c
+# ╔═╡ 319d784b-c62d-4f28-a5b3-ebf89c892afc
 """
-	This function is used to draw each trajectory given an array of hailstone sequences.
+This function returns a graph that represent the different branches that each number takes.
 
 ## Args
-```julia
-hailstone_seqs::Vector{Vector{Int64}}: Vector of hailstone sequences
-line_length::Int: Stroke with
-turn_scale::Float64: Ammoun to turn at each number)
 ```
+initial_value::Integer: The starting value of the directed tree graph.
 
-## Kw Args
-```julia
-window_width::Flaot64: Width of the current window 
-window_height::Float64: Height of the current window
-x_start::Float64 = window_width/2: X location where to start drawing
-y_start::Float64 = window_height: Y location where to start drawing
-init_angle::Float64: Starting angle where to start drawing 
-kwargs: Extra key words arguments to be passed to draw_hailstone_sequence
+max_orbit_distance::Integer: Degree of seperation between the initial value and each value encountered. 
+```
+More info [here](https://docs.juliahub.com/Collatz/UmeZE/1.0.0/functions/#Collatz.tree_graph)
+## Kwargs
+```
+P::Integer=2: Modulus used to devide n, iff n is equivalent to (0 mod P).
+
+a::Integer=3: Factor by which to multiply n.
+
+b::Integer=1: Value to add to the scaled value of n.
 ```
 """
-function draw_hailstone_sequences(hailstone_seqs::Vector{Vector{Int64}}, line_length::Int, turn_scale::Float64; 
-	window_width::Float64, window_height::Float64, x_start::Float64=window_width/2, y_start::Float64=window_height, init_angle::Float64, kwargs...)
-	
-	for hailstone_seq in hailstone_seqs
-		# reset to origin and setup windows accord to user parameter
-		origin()
-		Luxor.translate(
-			x_start - window_width  /2,
-			y_start - window_height /2
-		)
-		Luxor.rotate(deg2rad(init_angle)+π)
-
-		# draw sequence
-		draw_hailstone_sequence(hailstone_seq, line_length, turn_scale; kwargs...)
-	end
+function make_collatz_graph(initial_value::Int, max_orbit_distance::Int; P=2, a=3, b=1)
+	g = SimpleGraph()
+	record::Array{Number} = []
+	tree = tree_graph(initial_value,max_orbit_distance; P, a,b )
+	descend_tree!(g, record, tree)
+	return g, record
 end
 
 # ╔═╡ 5683080b-7d4b-4e34-aa75-b3c68dc60314
@@ -299,6 +222,44 @@ begin
 		
 	end
 	
+end
+
+# ╔═╡ 278572e6-5a74-4dad-b39b-68cc85e4339c
+"""
+	This function is used to draw each trajectory given an array of hailstone sequences.
+
+## Args
+```julia
+hailstone_seqs::Vector{Vector{Int64}}: Vector of hailstone sequences
+line_length::Int: Stroke with
+turn_scale::Float64: Ammoun to turn at each number)
+```
+
+## Kw Args
+```julia
+window_width::Flaot64: Width of the current window 
+window_height::Float64: Height of the current window
+x_start::Float64 = window_width/2: X location where to start drawing
+y_start::Float64 = window_height: Y location where to start drawing
+init_angle::Float64: Starting angle where to start drawing 
+kwargs: Extra key words arguments to be passed to draw_hailstone_sequence
+```
+"""
+function draw_hailstone_sequences(hailstone_seqs::Vector{Vector{Int64}}, line_length::Int, turn_scale::Float64; 
+	window_width::Float64, window_height::Float64, x_start::Float64=window_width/2, y_start::Float64=window_height, init_angle::Float64, kwargs...)
+	
+	for hailstone_seq in hailstone_seqs
+		# reset to origin and setup windows accord to user parameter
+		origin()
+		Luxor.translate(
+			x_start - window_width  /2,
+			y_start - window_height /2
+		)
+		Luxor.rotate(deg2rad(init_angle)+π)
+
+		# draw sequence
+		draw_hailstone_sequence(hailstone_seq, line_length, turn_scale; kwargs...)
+	end
 end
 
 # ╔═╡ 43479204-cd12-40b4-a65f-16bf54aaddfe
@@ -438,6 +399,26 @@ begin
 		               for i in 1:nv(g)]
 end;
 
+# ╔═╡ 3550fe19-261e-4069-9bf6-6417dcaac102
+begin
+	a = @drawsvg begin
+    background("white")
+    sethue("grey40")
+    fontsize(35)
+	Karnak.rotate(deg2rad(graph_extra_parameters.rotation))
+    drawgraph(g, 
+		layout=Stress(),
+		margin = 60,                         
+        vertexlabels = record,
+		vertexshapesizes = 40,
+        vertexfillcolors = graph_colors
+    )
+			
+end 1600 1200
+			
+			a
+end
+
 # ╔═╡ 5977a13d-93b8-4e51-8484-5b1882100c49
 function format_numberFieldParameter( params::Vector{NumberFieldParameter{T}};title::String,) where T
 	
@@ -477,12 +458,6 @@ function format_checkBoxParameter( params::Vector{CheckBoxParameter};title::Stri
 	end
 end
 
-# ╔═╡ c0e11c73-71db-492e-9666-908616fcd7b3
-@bind extra_viz_options format_checkBoxParameter([
-	CheckBoxParameter(alias=:rand_shade, label="Random Shade"),
-	CheckBoxParameter(alias=:vary_shade, label="Vary Shade")
-], title="Extra Options")
-
 # ╔═╡ 2d98aed3-9a51-4225-b914-a20b19f43908
 function format_colorPicker( params::Vector{ColorParameter};title::String)
 	
@@ -506,29 +481,121 @@ end
 # ╔═╡ a52781ec-98ba-4c0f-8f50-87d351a017b8
 begin
 	colors_sliders = @bind viz_colors_options format_colorPicker(
+		title="Color Options",
 	[
-		ColorParameter(alias=:stroke, label="Stroke Color", default=RGB{N0f8}(reinterpret(N0f8, UInt8(230)),reinterpret(N0f8, UInt8(130)),reinterpret(N0f8, UInt8(130))))
-		ColorParameter(alias=:background, label="Background")
-	];
-	title="Color Options"
+		ColorParameter(
+		alias = :stroke_color, 
+		label = "Stroke Color", 
+		default = RGB{N0f8}(
+			reinterpret(N0f8, UInt8(230)),
+			reinterpret(N0f8, UInt8(130)),
+			reinterpret(N0f8, UInt8(130)))
+		),
+		ColorParameter(
+			alias=:background_color, 
+			label="Background")
+	]
+	
 )
-viz_sliders = @bind viz_parameters format_sliderParameter(title="Visualization Parameters:",[
-	SliderParameter(lb = 100, ub = 10000, default = 1000, 
- step = 100, alias = :num_traject, label = "Numbers of trajectories"),
-	SliderParameter(lb = 10,ub = 100, alias=:step, label="Zoom"),
-	SliderParameter(lb = 0, ub = 360, default = 20.0, step = 0.1, alias = :init_angle, label = "Initial Angle (in degrees)"),
-	SliderParameter(lb = 0, ub = 180, default = 10.0, step = 0.1, alias = :step_angle, label = "Rotation Angle (in degrees)"),
-	SliderParameter(lb = 0, ub = window_width, default = window_width/2, step = 0.1, alias = :x_start, label = "Starting point (X)"),
-	SliderParameter(lb = 0, ub = window_height, default = window_height, step = 0.1, alias = :y_start, label = "Starting point (Y)"),
-])
+	
+		viz_sliders = @bind viz_parameters format_sliderParameter(
+			title = "Visualization Options:", 
+			[
+				SliderParameter(
+				lb = 100,
+				ub = 10000, 
+				default = 1000, 
+		 		step = 100, 
+				alias = :num_traject, 
+				label = "Numbers of trajectories"),
+			SliderParameter(
+				lb = 20,
+				ub = 100, 
+				alias=:step, 
+				label="Step"),
+			SliderParameter(
+				lb = 0,
+				ub = 180, 
+				default = 10.0,
+				step = 0.1, 
+				alias = :step_angle, 
+				label = "Rotation Angle (in degrees)"
+			),
+				
+			])
+		viz_specs_sliders = @bind viz_specs_parameters format_sliderParameter(
+			title = "Image Options:", 
+			[
+				SliderParameter(
+				lb = 0,
+				ub = 360,
+				default = 20.0,
+				step = 0.1,
+				alias = :init_angle, 
+				label = "Image Rotation (in degrees)"
+			),
+			SliderParameter(
+				lb = 0,
+				ub = window_width, 
+				default = window_width/2, 
+				step = 0.1, 
+				alias = :x_start, 
+				label = "Starting point (X)"
+			),
+			SliderParameter(
+				lb = 0, 
+				ub = window_height,
+				default = window_height, 
+				step = 0.1, 
+				alias = :y_start, 
+				label = "Starting point (Y)"
+			),
+			SliderParameter(
+				lb = 1, 
+				ub = 50,
+				default = 5.0, 
+				step = 0.1, 
+				alias = :stroke_width, 
+				label = "Stroke Width"
+			),
+		]
+	)
+		viz_extra_sliders = @bind viz_extra_options format_checkBoxParameter([
+	CheckBoxParameter(alias=:random_shade, label="Random Color"),
+	CheckBoxParameter(alias=:vary_shade, label="Vary Shade")
+	], title="Extra Options")
 	
 	@htl("""
-	<div class="slider_group">
-		<div>
-			$viz_sliders
+	<div class="slider_group sidebar-left">
+		<div class="on_big_show">
+			<div class="slider_group_inner">
+				$viz_sliders
+			</div>
 		</div>
-		<div>
+		
+	</div>
+	<div class="slider_group sidebar-right">
+		
+		<div class="on_small_show">
+			<div class="slider_group_inner ">
+			$viz_sliders
+			</div>
+		</div>
+		
+		
+		<div class="slider_group_inner">
+		
+			$viz_specs_sliders
+		</div>
+		
+		<div class="slider_group_inner">
+		
+	
 			$colors_sliders
+		</div>
+			<div class="slider_group_inner">
+				$viz_extra_sliders
+			</div>
 		</div>
 	</div>
 	""")
@@ -545,11 +612,68 @@ begin
 
 end
 
+# ╔═╡ 6d225dce-3362-4f5d-bba9-0b5312f6be5a
+begin
+	(; step_angle, step ) = viz_parameters
+	(; init_angle, x_start, y_start, stroke_width) = viz_specs_parameters
+	(; stroke_color, background_color ) = viz_colors_options
+	(; random_shade, vary_shade ) = viz_extra_options
+	viz = @draw begin
+		background(background_color)
+		draw_hailstone_sequences(
+			trajectories, step, step_angle; 
+			window_width, window_height, init_angle, x_start, y_start,
+			stroke_width, stroke_color, random_shade, vary_shade
+		)
+	end window_width window_height
+end
+
+# ╔═╡ 90dc6dd4-c4f3-4e4d-8e91-0fecafd258e1
+md"## CSS Styles"
+
 # ╔═╡ 7baab6e9-31bb-4da5-8ab9-938546cc863e
 @htl("""
 
 <style>
+
+
+
+@media screen and (min-width: 400px) {
+	.on_small_show {
+		display: flex;
+	}
+	.on_big_show {
+		display: none;
+	}
+}
+@media screen and (min-width: 1500px) {
+	.on_small_show {
+		display: none;
+	}
+	.on_big_show {
+		display: flex;
+	}
+}
+
+.sidebar-left {
+    top: -3000%;
+position: absolute;
+right: 100%;
+width: 15rem;
+}
+.sidebar-right {
+    top: -3000%;
+position: absolute;
+left: 100%;
+width: 15rem;
+}
 .slider_group{
+	display:flex; 
+	flex-direction: column;
+	padding: .5rem; 
+	gap: 2rem
+}
+.slider_group_inner{
 	display:flex; 
 	align-items:center; 
 	padding: .5rem; 
@@ -1932,9 +2056,8 @@ version = "1.4.1+1"
 # ╠═4f8d2d6c-d55b-4072-993e-1f9ed537f9bd
 # ╠═b5fb1fa3-a205-42e9-9fb7-2f3324dc23be
 # ╟─f21f1e3e-a3ab-458e-a101-ce824731f0b6
+# ╠═6d225dce-3362-4f5d-bba9-0b5312f6be5a
 # ╟─a52781ec-98ba-4c0f-8f50-87d351a017b8
-# ╟─6d225dce-3362-4f5d-bba9-0b5312f6be5a
-# ╟─c0e11c73-71db-492e-9666-908616fcd7b3
 # ╟─0865f8a3-a959-481b-a9ae-adbca78a2749
 # ╟─57853a4a-ca67-4537-8cd0-177c677acc1c
 # ╠═762a90fe-8ee7-409e-b29e-e721e5fa3931
@@ -1953,6 +2076,7 @@ version = "1.4.1+1"
 # ╠═5977a13d-93b8-4e51-8484-5b1882100c49
 # ╠═a7885279-3f73-4c5d-aeef-061dea1ce930
 # ╠═2d98aed3-9a51-4225-b914-a20b19f43908
+# ╠═90dc6dd4-c4f3-4e4d-8e91-0fecafd258e1
 # ╠═7baab6e9-31bb-4da5-8ab9-938546cc863e
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

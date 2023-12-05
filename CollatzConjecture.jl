@@ -42,6 +42,9 @@ md"# The Collatz Conjecture"
 # ╔═╡ 822a3646-be9d-4b1c-a189-550bd8b56ab7
 md"# Introduction"
 
+# ╔═╡ 81db5594-75c0-4bfb-8908-ef8084559123
+md"## The Hailstone Sequence"
+
 # ╔═╡ 75b9294e-43a4-48c4-b493-5d40027f3cd6
 md"## The Collatz Graph"
 
@@ -366,6 +369,21 @@ function format_sliderParameter( params::Vector{SliderParameter};title::String,)
 	end
 end
 
+# ╔═╡ e57da7e5-32bb-48a2-af27-5ac671cabdae
+@bind hailstone_params format_sliderParameter(title="Hailstone Sequence Parameters:",[
+	SliderParameter(lb=1,ub=1000,default=15,step=1,alias=:start_value,label="Starting Value")]
+	)
+
+# ╔═╡ 66fe673a-7679-4c55-bf59-146a8dd1241c
+begin
+	hailstone_seq = hailstone_sequence(hailstone_params.start_value; P = 2, a = 3, b =1, verbose=false)
+	plot(hailstone_seq, leg = false)
+	xlabel!("Iterations")
+	ylabel!("Value")
+	title!("Hailstone sequence of: $(hailstone_params.start_value)")
+	scatter!(hailstone_seq)
+end
+
 # ╔═╡ 43c4fd8d-bb44-43cd-91dd-d221629d1fd9
 begin
 graph_sliders = @bind graph_parameters format_sliderParameter(title="Collatz Graph Parameters:",[
@@ -388,17 +406,6 @@ graph_sliders = @bind graph_parameters format_sliderParameter(title="Collatz Gra
 	</div>
 	</div>
 	""")
-end
-
-# ╔═╡ 66fe673a-7679-4c55-bf59-146a8dd1241c
-begin
-	hailstone_seq = hailstone_sequence(graph_parameters.start_value; P = 2, a = 3, b =1, verbose=false)
-	# hailstone_seq = hailstone_sequence(start_value; collatz_parameters.P,collatz_parameters.a, collatz_parameters.b, verbose=false)
-	plot(hailstone_seq, leg = false)
-	xlabel!("Iterations")
-	ylabel!("Value")
-	title!("Hailstone sequence of: $(graph_parameters.start_value)")
-	scatter!(hailstone_seq)
 end
 
 # ╔═╡ 0fd7242c-46a1-4929-9c53-3c45768893b4
@@ -2086,7 +2093,9 @@ version = "1.4.1+1"
 # ╠═b7831999-3268-40fc-83d3-cd1290beaa4c
 # ╠═5430d55c-d2a1-4312-8d23-eda17be9b08f
 # ╟─822a3646-be9d-4b1c-a189-550bd8b56ab7
-# ╟─66fe673a-7679-4c55-bf59-146a8dd1241c
+# ╠═81db5594-75c0-4bfb-8908-ef8084559123
+# ╠═e57da7e5-32bb-48a2-af27-5ac671cabdae
+# ╠═66fe673a-7679-4c55-bf59-146a8dd1241c
 # ╟─6693800b-e2bc-46e4-b5f8-004184ef472b
 # ╟─75b9294e-43a4-48c4-b493-5d40027f3cd6
 # ╟─12d218ee-9a43-4647-a96b-c9252c665fa0

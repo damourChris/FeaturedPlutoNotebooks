@@ -42,6 +42,26 @@ md"# The Collatz Conjecture"
 # ╔═╡ 822a3646-be9d-4b1c-a189-550bd8b56ab7
 md"# Introduction"
 
+# ╔═╡ 3550fe19-261e-4069-9bf6-6417dcaac102
+begin
+	a = @drawsvg begin
+    background("white")
+    sethue("grey40")
+    fontsize(35)
+	Karnak.rotate(deg2rad(graph_extra_parameters.rotation))
+    drawgraph(g, 
+		layout=Stress(),
+		margin = 60,                         
+        vertexlabels = record,
+		vertexshapesizes = 40,
+        vertexfillcolors = graph_colors
+    )
+			
+end 1600 1200
+			
+			a
+end
+
 # ╔═╡ 6f68b20d-67e5-4872-a23b-1840bbbb06ec
 md"## The concept of stopping time"
 
@@ -50,6 +70,25 @@ stopping_times = [stopping_time(d) for d in range(1,100)]
 
 # ╔═╡ b5fb1fa3-a205-42e9-9fb7-2f3324dc23be
 plot(stopping_times)
+
+# ╔═╡ 6d225dce-3362-4f5d-bba9-0b5312f6be5a
+begin
+	let 
+		state, set_state = @use_state(nothing)
+		@use_effect([trajectories, viz_parameters, viz_colors_options,extra_viz_options]) do
+		 	viz = @draw begin
+				background(viz_colors_options.background)
+				sethue("white")
+				setline(1)
+			    draw_curved_trajectories(trajectories,viz_parameters.step, viz_parameters.step_angle)
+			end window_width window_height
+			
+			set_state(viz)
+		end
+		state
+	end
+	
+end
 
 # ╔═╡ 0865f8a3-a959-481b-a9ae-adbca78a2749
 begin
@@ -72,23 +111,29 @@ md"Interesting Values to try out:
 # ╔═╡ cdfb638b-a04c-482c-9206-47f7dfd63766
 md"# Appendix"
 
-# ╔═╡ 747a6846-4a8e-4049-9bfd-7bde5cdeb8d6
-?make_collatz_graph
+# ╔═╡ 319d784b-c62d-4f28-a5b3-ebf89c892afc
+"""
+This function returns a graph that represent the different branches that each number takes.
 
-# ╔═╡ abced6b9-dbbf-49d8-ac21-8e0cea7d6d04
-d = SimpleGraph()
+Args
+initial_value::Integer: The root value of the directed tree graph.
 
-# ╔═╡ 3434900d-26c5-4f7a-90ca-80de67f164ef
-typeof(d)
+max_orbit_distance::Integer: Maximum amount of times to iterate the reverse function. There is no natural termination to populating the tree graph, equivalent to the termination of hailstone sequences or stopping time attempts, so this is not an optional argument like maxstoppingtime / maxtotalstopping_time, as it is the intended target of orbits to obtain, rather than a limit to avoid uncapped computation.
 
-# ╔═╡ f2885445-6f50-46b1-a295-57b2a80ed6bf
+## Kwargs
+P::Integer=2: Modulus used to devide n, iff n is equivalent to (0 mod P).
 
+a::Integer=3: Factor by which to multiply n.
 
-# ╔═╡ 06087b86-3da3-4f14-8a09-ca340f1e6884
-
-
-# ╔═╡ b3754b38-306d-4214-84e4-f8ab3393c0e3
-?tree_graph
+b::Integer=1: Value to add to the scaled value of n.
+"""
+function make_collatz_graph(start_value::Int, max_orbit_distance::Int; P=2, a=3, b=1)
+	g = SimpleGraph()
+	record::Array{Number} = []
+	tree = tree_graph(start_value,max_orbit_distance; P, a,b )
+	descend_tree!(g, record, tree)
+	return g, record
+end
 
 # ╔═╡ 3153ba89-f2d4-4e31-9e79-00ec5ecbb91c
 function descend_tree!(g::SimpleGraph{Int64}, record::Array{Number},  tree::Dict, previous::Number=collect(keys(tree))[1], level::Int=0)
@@ -128,33 +173,6 @@ function descend_tree!(g::SimpleGraph{Int64}, record::Array{Number},  key::Int64
 	push!(record, key)
 	return
 end
-
-# ╔═╡ 319d784b-c62d-4f28-a5b3-ebf89c892afc
-"""
-This function returns a graph that represent the different branches that each number takes.
-
-Args
-initial_value::Integer: The root value of the directed tree graph.
-
-max_orbit_distance::Integer: Maximum amount of times to iterate the reverse function. There is no natural termination to populating the tree graph, equivalent to the termination of hailstone sequences or stopping time attempts, so this is not an optional argument like maxstoppingtime / maxtotalstopping_time, as it is the intended target of orbits to obtain, rather than a limit to avoid uncapped computation.
-
-## Kwargs
-P::Integer=2: Modulus used to devide n, iff n is equivalent to (0 mod P).
-
-a::Integer=3: Factor by which to multiply n.
-
-b::Integer=1: Value to add to the scaled value of n.
-"""
-function make_collatz_graph(start_value::Int, max_orbit_distance::Int; P=2, a=3, b=1)
-	g = SimpleGraph()
-	record::Array{Number} = []
-	tree = tree_graph(start_value,max_orbit_distance; P, a,b )
-	descend_tree!(g, record, tree)
-	return g, record
-end
-
-# ╔═╡ 3c5d6c97-b96d-489e-a313-111456f020e5
-
 
 # ╔═╡ 43479204-cd12-40b4-a65f-16bf54aaddfe
 @kwdef struct SliderParameter{T} 
@@ -279,26 +297,6 @@ begin
 		               for i in 1:nv(g)]
 end;
 
-# ╔═╡ 3550fe19-261e-4069-9bf6-6417dcaac102
-begin
-	a = @drawsvg begin
-    background("white")
-    sethue("grey40")
-    fontsize(35)
-	Karnak.rotate(deg2rad(graph_extra_parameters.rotation))
-    drawgraph(g, 
-		layout=Stress(),
-		margin = 60,                         
-        vertexlabels = record,
-		vertexshapesizes = 40,
-        vertexfillcolors = graph_colors
-    )
-			
-end 1600 1200
-			
-			a
-end
-
 # ╔═╡ a7885279-3f73-4c5d-aeef-061dea1ce930
 function format_checkBoxParameter( params::Vector{CheckBoxParameter};title::String)
 	
@@ -324,9 +322,6 @@ end
 	CheckBoxParameter(alias=:rand_shade, label="Random Shade"),
 	CheckBoxParameter(alias=:vary_shade, label="Vary Shade")
 ], title="Extra Options")
-
-# ╔═╡ 3f7b62d9-a7a5-48bf-b051-f01a28aba489
-ColorPicker(default=RGB(1,1,1))
 
 # ╔═╡ 2d98aed3-9a51-4225-b914-a20b19f43908
 function format_colorPicker( params::Vector{ColorParameter};title::String)
@@ -427,25 +422,6 @@ function draw_curved_trajectories(arrays, line_length, turn_scale)
 		Luxor.rotate(deg2rad(viz_parameters.init_angle)+π)
 		 draw_with_turtle(arr, line_length, turn_scale)
 	end
-end
-
-# ╔═╡ 6d225dce-3362-4f5d-bba9-0b5312f6be5a
-begin
-	let 
-		state, set_state = @use_state(nothing)
-		@use_effect([trajectories, viz_parameters, viz_colors_options,extra_viz_options]) do
-		 	viz = @draw begin
-				background(viz_colors_options.background)
-				sethue("white")
-				setline(1)
-			    draw_curved_trajectories(trajectories,viz_parameters.step, viz_parameters.step_angle)
-			end window_width window_height
-			
-			set_state(viz)
-		end
-		state
-	end
-	
 end
 
 # ╔═╡ 7baab6e9-31bb-4da5-8ab9-938546cc863e
@@ -1842,16 +1818,9 @@ version = "1.4.1+1"
 # ╟─57853a4a-ca67-4537-8cd0-177c677acc1c
 # ╠═762a90fe-8ee7-409e-b29e-e721e5fa3931
 # ╟─cdfb638b-a04c-482c-9206-47f7dfd63766
-# ╠═747a6846-4a8e-4049-9bfd-7bde5cdeb8d6
-# ╠═abced6b9-dbbf-49d8-ac21-8e0cea7d6d04
-# ╠═3434900d-26c5-4f7a-90ca-80de67f164ef
-# ╠═f2885445-6f50-46b1-a295-57b2a80ed6bf
-# ╠═06087b86-3da3-4f14-8a09-ca340f1e6884
-# ╠═b3754b38-306d-4214-84e4-f8ab3393c0e3
 # ╠═319d784b-c62d-4f28-a5b3-ebf89c892afc
 # ╠═3153ba89-f2d4-4e31-9e79-00ec5ecbb91c
 # ╠═b79405c3-42d1-4289-bbc3-67b6eae2b135
-# ╠═3c5d6c97-b96d-489e-a313-111456f020e5
 # ╠═278572e6-5a74-4dad-b39b-68cc85e4339c
 # ╠═5683080b-7d4b-4e34-aa75-b3c68dc60314
 # ╠═43479204-cd12-40b4-a65f-16bf54aaddfe
@@ -1860,7 +1829,6 @@ version = "1.4.1+1"
 # ╠═7dac4da8-0877-4d07-b4d2-2164faeccfde
 # ╠═4dd44fbd-f26a-4b72-a580-842209b44f27
 # ╠═a7885279-3f73-4c5d-aeef-061dea1ce930
-# ╠═3f7b62d9-a7a5-48bf-b051-f01a28aba489
 # ╠═2d98aed3-9a51-4225-b914-a20b19f43908
 # ╠═7baab6e9-31bb-4da5-8ab9-938546cc863e
 # ╟─00000000-0000-0000-0000-000000000001

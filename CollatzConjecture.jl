@@ -43,13 +43,26 @@ md"# The Collatz Conjecture"
 md"# Introduction"
 
 # ╔═╡ 6f68b20d-67e5-4872-a23b-1840bbbb06ec
-md"## The concept of stopping time"
+md"## The stopping time of a number"
 
-# ╔═╡ 4f8d2d6c-d55b-4072-993e-1f9ed537f9bd
-stopping_times = [stopping_time(d) for d in range(1,100)]
+# ╔═╡ 6a45247d-25db-445f-a687-191c0952c6c4
+md"""At first it might seem that the fact that it *always* reaches 1 could appear strange, as some numbers get caught in a repeating pattern of multiplying by 3 and adding one, when dividing by 2, give a another odd number. Since:
 
-# ╔═╡ b5fb1fa3-a205-42e9-9fb7-2f3324dc23be
-plot(stopping_times)
+``
+\begin{aligned} x < \frac{3x + 1}{2} \end{aligned}
+``
+
+Thus, it's possible (and quite frequent) that we end going up in numbers, and looks like we are getting further away from the pit of doom that is the number 1. 
+
+However, this is unfortunately not the case (as far as we know), but we quantify this by calculating how long it takes for a number to reach a another number that is lower than the starting point: the stopping time. 
+
+Here is a plot to show the stopping times of the numbers for up to 1000. 
+
+!!! info "Interactivity"
+	Change the lower and upper bounds to explore the stopping times of larger numbers!
+"""
+
+
 
 # ╔═╡ 0865f8a3-a959-481b-a9ae-adbca78a2749
 begin
@@ -375,6 +388,21 @@ begin
 	ylabel!("Value")
 	title!("Hailstone sequence of: $(graph_parameters.start_value)")
 	scatter!(hailstone_seq)
+end
+
+# ╔═╡ 0fd7242c-46a1-4929-9c53-3c45768893b4
+@bind stopping_parameters format_sliderParameter(title="Stopping Time Plot Parameters",
+	[SliderParameter(lb=100, ub=10000, step=100, default=1000,alias=:ub, label="Upper Bound"),
+	SliderParameter(lb=1, ub=10000,step=100, alias=:lb, label="Lower Bound")]
+
+)
+
+# ╔═╡ b5fb1fa3-a205-42e9-9fb7-2f3324dc23be
+begin
+	[stopping_time(d) for d in range(stopping_parameters.lb,stopping_parameters.ub)] |> plot
+	title!("Stopping Time of numbers up to 1000")
+	ylabel!("Stopping Time")
+	xlabel!("Starting Point")
 end
 
 # ╔═╡ f21f1e3e-a3ab-458e-a101-ce824731f0b6
@@ -2052,8 +2080,9 @@ version = "1.4.1+1"
 # ╟─43c4fd8d-bb44-43cd-91dd-d221629d1fd9
 # ╟─6693800b-e2bc-46e4-b5f8-004184ef472b
 # ╟─3550fe19-261e-4069-9bf6-6417dcaac102
-# ╠═6f68b20d-67e5-4872-a23b-1840bbbb06ec
-# ╠═4f8d2d6c-d55b-4072-993e-1f9ed537f9bd
+# ╟─6f68b20d-67e5-4872-a23b-1840bbbb06ec
+# ╟─6a45247d-25db-445f-a687-191c0952c6c4
+# ╟─0fd7242c-46a1-4929-9c53-3c45768893b4
 # ╠═b5fb1fa3-a205-42e9-9fb7-2f3324dc23be
 # ╟─f21f1e3e-a3ab-458e-a101-ce824731f0b6
 # ╠═6d225dce-3362-4f5d-bba9-0b5312f6be5a

@@ -149,8 +149,17 @@ Here is a plot to show the stopping times of the numbers for up to 1000.
 # ╔═╡ d0672735-8007-4a69-9fa5-0f40ac0685ea
 md"# Interactive Visualization"
 
+# ╔═╡ 2ebe272c-684d-498c-b23a-edc61bf49773
+
+
 # ╔═╡ 0865f8a3-a959-481b-a9ae-adbca78a2749
 window_height,window_width = (700.0, 700.0);
+
+# ╔═╡ 3b566b19-6be4-4c0a-9f0f-6ee1dc7554a1
+
+
+# ╔═╡ dc1dba7c-8c0d-4609-882a-e5703c467fef
+md"# Generalize the collatz function"
 
 # ╔═╡ 57853a4a-ca67-4537-8cd0-177c677acc1c
 md"Interesting Values to try out:
@@ -164,8 +173,30 @@ md"Interesting Values to try out:
 
 "
 
-# ╔═╡ dc1dba7c-8c0d-4609-882a-e5703c467fef
-md"# Generalize the collatz function"
+# ╔═╡ c1296299-4ecd-447e-8ffc-8e1633e36bbd
+begin
+	trajectories_generalized = Dict(
+		"1_1_3" =>  [reverse(
+		hailstone_sequence(starting_number; P=3, a=1, b=1, verbose=false)) 
+		for starting_number in range(5,1000)
+		],
+		"3_1_7" =>  [reverse(
+		hailstone_sequence(starting_number; P=7, a=1, b=3, verbose=false)) 
+		for starting_number in range(5,1000)
+		],
+		"3_7_2" =>  [reverse(
+		hailstone_sequence(starting_number; P=2, a=3, b=7, verbose=false)) 
+		for starting_number in range(5,1000)
+		],
+		"5_5_5" =>  [reverse(
+		hailstone_sequence(starting_number; P=5, a=5, b=5, verbose=false)) 
+		for starting_number in range(5,1000)
+		],
+	)
+end
+
+# ╔═╡ 16d57341-6c55-4440-bdeb-492b4d0c4427
+md"# Gallery of interesting visualization"
 
 # ╔═╡ cdfb638b-a04c-482c-9206-47f7dfd63766
 md"# Appendix"
@@ -369,6 +400,70 @@ function draw_hailstone_sequences(hailstone_seqs::Vector{Vector{Int64}}, line_le
 		draw_hailstone_sequence(hailstone_seq, line_length, turn_scale; kwargs...)
 	end
 end
+
+# ╔═╡ 9c1b87a4-5381-4270-9eb9-b00df20af145
+viz_5_5_5 = @draw begin
+		background(RGB(1,1,1))
+		draw_hailstone_sequences(
+			trajectories_generalized["5_5_5"], 15, 26.3; 
+			window_width = 700.0,
+			window_height = 500.0, 
+			init_angle = 145.0, 
+			x_start = 350.0, 
+			y_start = 500.0,
+			stroke_width = 2.0, 
+			stroke_color = RGB(1,0,0), 
+			vary_shade=true
+		)
+	end 700 500
+
+# ╔═╡ dc015964-5070-4686-b5ea-f6a335c112fb
+viz_3_7_2 = @draw begin
+		background(RGB(1,1,1))
+		draw_hailstone_sequences(
+			trajectories_generalized["3_7_2"], 24, 10.3; 
+			window_width = 700.0,
+			window_height = 500.0, 
+			init_angle = 36.0, 
+			x_start = 350.0, 
+			y_start = 500.0,
+			stroke_width = 2.0, 
+			stroke_color = RGB(1,0,0), 
+			vary_shade=true
+		)
+	end 700 500
+
+# ╔═╡ d1476290-34c5-42f4-98a4-c6a15b702075
+viz_1_1_3 = @draw begin
+		background(RGB(1,1,1))
+		draw_hailstone_sequences(
+			trajectories_generalized["1_1_3"], 25, 15.0; 
+			window_width = 700.0,
+			window_height = 500.0, 
+			init_angle = 114.0, 
+			x_start = 350.0, 
+			y_start = 500.0,
+			stroke_width = 2.0, 
+			stroke_color = RGB(1,0,0), 
+			vary_shade=true
+		)
+	end 700 500
+
+# ╔═╡ 06746b95-aa87-421d-a877-d856b26992b9
+viz_3_1_7 = @draw begin
+		background(RGB(1,1,1))
+		draw_hailstone_sequences(
+			trajectories_generalized["3_1_7"], 22, 11.0; 
+			window_width = 700.0,
+			window_height = 500.0, 
+			init_angle = 95.0, 
+			x_start = 350.0, 
+			y_start = 500.0,
+			stroke_width = 2.0, 
+			stroke_color = RGB(1,0,0), 
+			vary_shade=true
+		)
+	end 700 500
 
 # ╔═╡ f47eb656-67ec-4760-8906-713fa480cb47
 md"## Interactivity stuff"
@@ -2188,15 +2283,23 @@ version = "1.4.1+1"
 # ╟─6f68b20d-67e5-4872-a23b-1840bbbb06ec
 # ╟─6a45247d-25db-445f-a687-191c0952c6c4
 # ╟─0fd7242c-46a1-4929-9c53-3c45768893b4
-# ╠═b5fb1fa3-a205-42e9-9fb7-2f3324dc23be
+# ╟─b5fb1fa3-a205-42e9-9fb7-2f3324dc23be
 # ╟─d0672735-8007-4a69-9fa5-0f40ac0685ea
 # ╟─6d225dce-3362-4f5d-bba9-0b5312f6be5a
 # ╟─a52781ec-98ba-4c0f-8f50-87d351a017b8
-# ╠═0865f8a3-a959-481b-a9ae-adbca78a2749
-# ╟─57853a4a-ca67-4537-8cd0-177c677acc1c
-# ╠═762a90fe-8ee7-409e-b29e-e721e5fa3931
-# ╟─dc1dba7c-8c0d-4609-882a-e5703c467fef
 # ╟─f21f1e3e-a3ab-458e-a101-ce824731f0b6
+# ╠═9c1b87a4-5381-4270-9eb9-b00df20af145
+# ╠═dc015964-5070-4686-b5ea-f6a335c112fb
+# ╠═d1476290-34c5-42f4-98a4-c6a15b702075
+# ╠═06746b95-aa87-421d-a877-d856b26992b9
+# ╠═2ebe272c-684d-498c-b23a-edc61bf49773
+# ╟─0865f8a3-a959-481b-a9ae-adbca78a2749
+# ╠═762a90fe-8ee7-409e-b29e-e721e5fa3931
+# ╠═3b566b19-6be4-4c0a-9f0f-6ee1dc7554a1
+# ╟─dc1dba7c-8c0d-4609-882a-e5703c467fef
+# ╠═57853a4a-ca67-4537-8cd0-177c677acc1c
+# ╠═c1296299-4ecd-447e-8ffc-8e1633e36bbd
+# ╠═16d57341-6c55-4440-bdeb-492b4d0c4427
 # ╟─cdfb638b-a04c-482c-9206-47f7dfd63766
 # ╟─0fdafbdc-a6aa-42a6-a899-41b351b5e7e8
 # ╟─c5673bfa-d2b0-4893-ad88-42a5b81f27b4

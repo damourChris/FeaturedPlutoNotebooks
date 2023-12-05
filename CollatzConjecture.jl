@@ -39,6 +39,14 @@ using Collatz, FixedPointNumbers
 # ╔═╡ fbbc2012-9177-11ee-2e5a-ff0b0713875d
 md"# The Collatz Conjecture"
 
+# ╔═╡ dbfb23cb-5385-4115-8adf-8fe8167629ee
+md"""
+!!! tip "About this notebook"
+
+	This notebook introduces the Collatz Conjecture, explores some aspects of the problem and ends with a interactive visualization of the problem. 
+
+"""
+
 # ╔═╡ 822a3646-be9d-4b1c-a189-550bd8b56ab7
 md"# Introduction"
 
@@ -2118,6 +2126,8 @@ version = "1.4.1+1"
 # ╠═ef17d91f-04c5-43db-811e-d228495384dc
 # ╠═b7831999-3268-40fc-83d3-cd1290beaa4c
 # ╠═5430d55c-d2a1-4312-8d23-eda17be9b08f
+# ╠═5328c6f3-2ae7-4449-a2a2-b6803cec0dcc
+# ╠═dbfb23cb-5385-4115-8adf-8fe8167629ee
 # ╟─822a3646-be9d-4b1c-a189-550bd8b56ab7
 # ╟─0bc0ea95-585d-43be-b7ac-c33a2a7417b4
 # ╠═81db5594-75c0-4bfb-8908-ef8084559123

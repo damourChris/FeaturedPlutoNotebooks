@@ -42,6 +42,32 @@ md"# The Collatz Conjecture"
 # ╔═╡ 822a3646-be9d-4b1c-a189-550bd8b56ab7
 md"# Introduction"
 
+# ╔═╡ 0bc0ea95-585d-43be-b7ac-c33a2a7417b4
+md"""
+
+The Collatz Conjecture, also known as the 3x+1 problem, is a fascinating mathematical puzzle that has been named after the German mathematician Lothar Collatz. This conjecture arises from an iterative process where you start with any positive integer and alternate between two simple rules: 
+- if the number is *even*, you divide it by 2,
+- and if it's *odd*, you multiply it by 3 and add 1. 
+
+For example, take the number 3. It's odd, so we multiply by 3 and add 1. We get 10. Now that's even, so we can divide it by 2, to get 5. Back to odd, so let's multiply that by 3 and add 1. We are now at 16, which is *very* even. So much so that we can keep on dividing by 2 until we reach 1. 
+
+``3 \rightarrow 10 \rightarrow 5 \rightarrow 16 \rightarrow 8 \rightarrow 4 \rightarrow 2 \rightarrow 1``
+
+What happens when we reach 1? Well, it's odd so we multiply by 3 and add 1. And we are back at 4, which leads back to one. We have reached a cycle. 
+
+`` 4 \rightarrow 2 \rightarrow 1 \rightarrow  4 \rightarrow 2 \rightarrow 1  \ldots``
+
+
+##### The question is, can you predict what the number will be after a certain number of iterations?
+#####
+> The conjecture suggests that no matter what starting number you choose, **regardless** of its size, you will **always** reach the number 1. 
+
+However, despite being relatively simple to understand and easy to test for small numbers, it has so far proven difficult to prove definitively for all cases. This conjecture is an unsolved problem in mathematics that continues to intrigue both mathematicians and enthusiasts alike.
+
+The Collatz Conjecture's complexity lies not just in its simplicity and seemingly simple rules, but also in the potential for extremely long cycles of iterations. For example, starting with a number as small as 13, it quickly descends to 4, then to 2, back up to 8, and continues this pattern indefinitely without ever reaching 1. This makes the conjecture not only challenging but also mysterious and enticing.
+
+"""
+
 # ╔═╡ 81db5594-75c0-4bfb-8908-ef8084559123
 md"## The Hailstone Sequence"
 
@@ -2093,6 +2119,7 @@ version = "1.4.1+1"
 # ╠═b7831999-3268-40fc-83d3-cd1290beaa4c
 # ╠═5430d55c-d2a1-4312-8d23-eda17be9b08f
 # ╟─822a3646-be9d-4b1c-a189-550bd8b56ab7
+# ╟─0bc0ea95-585d-43be-b7ac-c33a2a7417b4
 # ╠═81db5594-75c0-4bfb-8908-ef8084559123
 # ╠═e57da7e5-32bb-48a2-af27-5ac671cabdae
 # ╠═66fe673a-7679-4c55-bf59-146a8dd1241c

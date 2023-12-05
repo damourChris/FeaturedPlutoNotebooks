@@ -115,28 +115,42 @@ md"# Appendix"
 """
 This function returns a graph that represent the different branches that each number takes.
 
-Args
-initial_value::Integer: The root value of the directed tree graph.
+## Args
+```
+initial_value::Integer: The starting value of the directed tree graph.
 
-max_orbit_distance::Integer: Maximum amount of times to iterate the reverse function. There is no natural termination to populating the tree graph, equivalent to the termination of hailstone sequences or stopping time attempts, so this is not an optional argument like maxstoppingtime / maxtotalstopping_time, as it is the intended target of orbits to obtain, rather than a limit to avoid uncapped computation.
-
+max_orbit_distance::Integer: Degree of seperation between the initial value and each value encountered. 
+```
+More info [here](https://docs.juliahub.com/Collatz/UmeZE/1.0.0/functions/#Collatz.tree_graph)
 ## Kwargs
+```
 P::Integer=2: Modulus used to devide n, iff n is equivalent to (0 mod P).
 
 a::Integer=3: Factor by which to multiply n.
 
 b::Integer=1: Value to add to the scaled value of n.
+```
 """
-function make_collatz_graph(start_value::Int, max_orbit_distance::Int; P=2, a=3, b=1)
+function make_collatz_graph(initial_value::Int, max_orbit_distance::Int; P=2, a=3, b=1)
 	g = SimpleGraph()
 	record::Array{Number} = []
-	tree = tree_graph(start_value,max_orbit_distance; P, a,b )
+	tree = tree_graph(initial_value,max_orbit_distance; P, a,b )
 	descend_tree!(g, record, tree)
 	return g, record
 end
 
 # ╔═╡ 3153ba89-f2d4-4e31-9e79-00ec5ecbb91c
-function descend_tree!(g::SimpleGraph{Int64}, record::Array{Number},  tree::Dict, previous::Number=collect(keys(tree))[1], level::Int=0)
+"""
+	This function is used to explore the tree return by `tree_graph` from Collatz.jl and modify the graph g given as input. 
+
+## Args 
+g::SimpleGraph: The graph to modify 
+record::Array: An array that keeps track of each of the encountered values
+tree::Dict: The tree graph returned by `tree_graph` 
+previous::Number: The number passed by the previous call to the function 
+depth::Int: The current depth of the search  
+"""
+function descend_tree!(g::SimpleGraph{Int64}, record::Array{Number},  tree::Dict, previous::Number=collect(keys(tree))[1], depth::Int=0)
 	
 	# loop over each branch
 	for key in  keys(tree)
@@ -155,13 +169,25 @@ function descend_tree!(g::SimpleGraph{Int64}, record::Array{Number},  tree::Dict
 		end
 
 		# call recursively to continue descending the tree 
-		descend_tree!(g, record,tree[key], key, level +1)
+		descend_tree!(g, record,tree[key], key, depth +1)
 	end
 	# end
 end
 
 # ╔═╡ b79405c3-42d1-4289-bbc3-67b6eae2b135
-function descend_tree!(g::SimpleGraph{Int64}, record::Array{Number},  key::Int64, previous::Collatz._CC.CC, level::Int=0)
+"""
+	This function is used to handle the case where the search hits a cycle and previous is of type Collatz._CC.CC
+
+## Args 
+```julia
+g::SimpleGraph: The graph to modify 
+record::Array: An array that keeps track of each of the encountered values
+tree::Dict: The tree graph returned by `tree_graph` 
+previous::Collatz._CC.CC: The cycle value.
+depth::Int: The current depth of the search  
+```
+"""
+function descend_tree!(g::SimpleGraph{Int64}, record::Array{Number},  key::Int64, previous::Collatz._CC.CC, depth::Int=0)
 	
 	# check if previous number exist in record
 	previous_index = findfirst(x -> x == previous, record)
@@ -172,6 +198,107 @@ function descend_tree!(g::SimpleGraph{Int64}, record::Array{Number},  key::Int64
 	# push key in record 
 	push!(record, key)
 	return
+end
+
+# ╔═╡ 278572e6-5a74-4dad-b39b-68cc85e4339c
+"""
+	This function is used to draw each trajectory given an array of hailstone sequences.
+
+## Args
+```julia
+hailstone_seqs::Vector{Vector{Int64}}: Vector of hailstone sequences
+line_length::Int: Stroke with
+turn_scale::Float64: Ammoun to turn at each number)
+```
+
+## Kw Args
+```julia
+window_width::Flaot64: Width of the current window 
+window_height::Float64: Height of the current window
+x_start::Float64 = window_width/2: X location where to start drawing
+y_start::Float64 = window_height: Y location where to start drawing
+init_angle::Float64: Starting angle where to start drawing 
+kwargs: Extra key words arguments to be passed to draw_hailstone_sequence
+```
+"""
+function draw_hailstone_sequences(hailstone_seqs::Vector{Vector{Int64}}, line_length::Int, turn_scale::Float64; 
+	window_width::Float64, window_height::Float64, x_start::Float64=window_width/2, y_start::Float64=window_height, init_angle::Float64, kwargs...)
+	
+	for hailstone_seq in hailstone_seqs
+		# reset to origin and setup windows accord to user parameter
+		origin()
+		Luxor.translate(
+			x_start - window_width  /2,
+			y_start - window_height /2
+		)
+		Luxor.rotate(deg2rad(init_angle)+π)
+
+		# draw sequence
+		draw_hailstone_sequence(hailstone_seq, line_length, turn_scale; kwargs...)
+	end
+end
+
+# ╔═╡ 5683080b-7d4b-4e34-aa75-b3c68dc60314
+begin
+	"""
+	This function is used to draw the trajectory of the hailstone sequence of a number. Using a Turtle, the function loops over each number in the sequence. For the sequence, a curve is drawn where for each step in the sequence, it will curves one way if the number is odd, and the other way if the number is even. 
+
+	## Args
+	```julia
+	hailtstone_seq::Array{Number}: A sequence of value representing the hailstone sequence of a number, as given by `hailstone_sequence()`.
+	line_length::Int: The stroke width of the curve
+	turn_scale::Float64: The ammount to turn at each number
+	```
+
+	## Kw Args
+	```julia
+	stroke_width::Float64=10: Stroke width of curve
+	stroke_color::RGB=RGB(1,1,1): Stroke color of curve
+	random_shade::Bool=false: Whether to chose a random color for the curve
+	vary_shade::Bool: Whether to vary the color given by a random amount every time its drawn
+	```
+	
+	"""
+	function draw_hailstone_sequence(hailstone_seq::Vector{Int64}, line_length::Int, turn_scale::Float64; 
+		stroke_width::Float64=10, stroke_color::RGB=RGB(1,1,1), random_shade::Bool=false, vary_shade::Bool=false)
+		
+		# Initiliaze turle
+		🐢 = Turtle()
+		
+		# set stroke width
+		Penwidth(🐢, stroke_width)
+
+		# Handle Color
+		if(random_shade)
+			Pencolor(🐢,RGB(rand(), rand(), rand()))
+			
+		elseif vary_shade
+			
+			color_offset = randn()/4
+			Pencolor(🐢,RGB(stroke_color.r + color_offset, stroke_color.g + color_offset, stroke_color.b + color_offset))
+		else
+			Pencolor(🐢,stroke_color)
+		end
+
+		# Move the turtle 
+		 for (index,number) in enumerate(hailstone_seq)
+
+			# decrease opacity as the sequence gets longer
+			setopacity(rescale(index, 1, length(hailstone_seq)*8
+				, 0.1,1))
+
+			 
+			if number % 2 == 0
+				Turn(🐢, turn_scale)
+	        else
+				Turn(🐢, -turn_scale)
+			end
+			 
+			Forward(🐢, line_length)
+		end
+		
+	end
+	
 end
 
 # ╔═╡ 43479204-cd12-40b4-a65f-16bf54aaddfe
@@ -383,45 +510,6 @@ begin
 	]
 	
 
-end
-
-# ╔═╡ 5683080b-7d4b-4e34-aa75-b3c68dc60314
-begin
-	function draw_with_turtle(numbers, line_length, turn_scale)
-		
-		🐢 = Turtle()
-		Penwidth(🐢, 3)
-		if(extra_viz_options.rand_shade)
-			Pencolor(🐢,RGB(rand(), rand(), rand()))
-		elseif extra_viz_options.vary_shade
-			color_offset = randn()
-			Pencolor(🐢,RGB(viz_colors_options.stroke.r + color_offset, viz_colors_options.stroke.g + color_offset, viz_colors_options.stroke.b + color_offset))
-		else
-			Pencolor(🐢,viz_colors_options.stroke)
-		end
-		 for (index,number) in enumerate(numbers)
-			setopacity(rescale(index, 1, length(numbers)*4
-				, 0.1,.9))
-			if number % 2 == 0
-				Turn(🐢, turn_scale)
-	        else
-				Turn(🐢, -turn_scale)
-			end
-			Forward(🐢, line_length)
-		end
-		
-	end
-	
-end
-
-# ╔═╡ 278572e6-5a74-4dad-b39b-68cc85e4339c
-function draw_curved_trajectories(arrays, line_length, turn_scale)
-	for arr in arrays
-		origin()
-		Luxor.translate(viz_parameters.x_start - window_width/2,viz_parameters.y_start - window_height/2)
-		Luxor.rotate(deg2rad(viz_parameters.init_angle)+π)
-		 draw_with_turtle(arr, line_length, turn_scale)
-	end
 end
 
 # ╔═╡ 7baab6e9-31bb-4da5-8ab9-938546cc863e

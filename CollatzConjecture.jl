@@ -42,6 +42,17 @@ md"# The Collatz Conjecture"
 # ╔═╡ 822a3646-be9d-4b1c-a189-550bd8b56ab7
 md"# Introduction"
 
+# ╔═╡ 75b9294e-43a4-48c4-b493-5d40027f3cd6
+md"## The Collatz Graph"
+
+# ╔═╡ 12d218ee-9a43-4647-a96b-c9252c665fa0
+md"""
+
+We can visualize the path that each number takes with a graph. 
+
+
+"""
+
 # ╔═╡ 6f68b20d-67e5-4872-a23b-1840bbbb06ec
 md"## The stopping time of a number"
 
@@ -429,22 +440,21 @@ end;
 
 # ╔═╡ 3550fe19-261e-4069-9bf6-6417dcaac102
 begin
-	a = @drawsvg begin
-    background("white")
-    sethue("grey40")
-    fontsize(35)
-	Karnak.rotate(deg2rad(graph_extra_parameters.rotation))
-    drawgraph(g, 
-		layout=Stress(),
-		margin = 60,                         
-        vertexlabels = record,
-		vertexshapesizes = 40,
-        vertexfillcolors = graph_colors
-    )
+	collatz_graph = @drawsvg begin
+	    background("white")
+	    sethue("grey40")
+	    fontsize(35)
+		Karnak.rotate(deg2rad(graph_extra_parameters.rotation))
+	    drawgraph(g, 
+			layout=Stress(),
+			margin = 60,                         
+	        vertexlabels = record,
+			vertexshapesizes = 40,
+	        vertexfillcolors = graph_colors
+	    )	
+	end 1600 1200
 			
-end 1600 1200
-			
-			a
+	collatz_graph
 end
 
 # ╔═╡ 5977a13d-93b8-4e51-8484-5b1882100c49
@@ -2077,9 +2087,11 @@ version = "1.4.1+1"
 # ╠═5430d55c-d2a1-4312-8d23-eda17be9b08f
 # ╟─822a3646-be9d-4b1c-a189-550bd8b56ab7
 # ╟─66fe673a-7679-4c55-bf59-146a8dd1241c
-# ╟─43c4fd8d-bb44-43cd-91dd-d221629d1fd9
 # ╟─6693800b-e2bc-46e4-b5f8-004184ef472b
+# ╟─75b9294e-43a4-48c4-b493-5d40027f3cd6
+# ╟─12d218ee-9a43-4647-a96b-c9252c665fa0
 # ╟─3550fe19-261e-4069-9bf6-6417dcaac102
+# ╟─43c4fd8d-bb44-43cd-91dd-d221629d1fd9
 # ╟─6f68b20d-67e5-4872-a23b-1840bbbb06ec
 # ╟─6a45247d-25db-445f-a687-191c0952c6c4
 # ╟─0fd7242c-46a1-4929-9c53-3c45768893b4

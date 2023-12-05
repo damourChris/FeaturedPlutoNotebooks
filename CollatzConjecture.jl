@@ -14,29 +14,62 @@ macro bind(def, element)
     end
 end
 
-# ╔═╡ ef17d91f-04c5-43db-811e-d228495384dc
+# ╔═╡ c5673bfa-d2b0-4893-ad88-42a5b81f27b4
+begin
+	using Collatz
+	using Graphs
+	using FixedPointNumbers 
+	md"""
+	!!! info "Numerical Packages"
+		[Collatz](https://juliapackages.com/p/collatz): This package provide the methods to generate the hailstone sequence, the tree graph and stopping time for the collatz conjecture. 
+	
+		[Graphs](https://www.juliapackages.com/p/graphs): Used to deal with creating and modifying graphs. 
+	
+		[FixedPointNumbers](https://www.juliapackages.com/p/fixedpointnumbers): Package to deal with fixed point number, only used to handle colors.
+	"""
+end
+
+# ╔═╡ e4a76493-9aea-4379-9a56-6a9b9e8d6b54
 begin
 	# Notebook related packages
 	using PlutoUI
-	using PlutoHooks
 	import PlutoUI: combine
+	using PlutoHooks
 	using HypertextLiteral:@htl
 
-	TableOfContents()
+	
+
+	md"""
+	!!! info "Notebook Packages"
+		[PlutoUI](https://www.juliapackages.com/p/PlutoUI): Extension for Pluto to handle interactivity, provides the Sliders, Checkboxes and Color Picker. 
+		
+		[PlutoHooks](https://www.juliapackages.com/p/PlutoHooks): Extension for Pluto to handle states for cells. Used mainly to reduce latency and avoiding recalcution of visualization. 
+	
+		[HypertextLiteral](https://www.juliapackages.com/p/HypertextLiteral): Drawing library, specifically for graphs.
+	
+	"""
 end
 
-# ╔═╡ b7831999-3268-40fc-83d3-cd1290beaa4c
+# ╔═╡ 13f52ec2-16b9-41a5-9560-177ca827a72e
 begin
-	using Plots, Graphs
-	using Colors,Luxor, Karnak, NetworkLayout
+	using Plots
+	using Colors
+	using Luxor
+	using Karnak, NetworkLayout
 	plotly()
+	md"""
+	!!! info "Ploting Packages"
+		[Plots](https://www.juliapackages.com/p/plots): Plotting library for the several plots in the notebook.
+		
+		[Luxor](https://www.juliapackages.com/p/luxor): Drawing library used for the visualiation.
+	
+		[Karnak](https://www.juliapackages.com/p/karnak): Drawing library, specifically for graphs.
+	
+		[NetworkLayout](https://www.juliapackages.com/p/networklayout): Used to compute the layout of the graphs.
+	"""
 end
 
-# ╔═╡ 5430d55c-d2a1-4312-8d23-eda17be9b08f
-# Numerical packages
-using Collatz, FixedPointNumbers 
-
-# ╔═╡ fbbc2012-9177-11ee-2e5a-ff0b0713875d
+# ╔═╡ 5328c6f3-2ae7-4449-a2a2-b6803cec0dcc
 md"# The Collatz Conjecture"
 
 # ╔═╡ dbfb23cb-5385-4115-8adf-8fe8167629ee
@@ -132,6 +165,10 @@ md"Interesting Values to try out:
 
 # ╔═╡ cdfb638b-a04c-482c-9206-47f7dfd63766
 md"# Appendix"
+
+# ╔═╡ 0fdafbdc-a6aa-42a6-a899-41b351b5e7e8
+md"## Packages Used"
+
 
 # ╔═╡ 3153ba89-f2d4-4e31-9e79-00ec5ecbb91c
 """
@@ -2122,10 +2159,6 @@ version = "1.4.1+1"
 """
 
 # ╔═╡ Cell order:
-# ╟─fbbc2012-9177-11ee-2e5a-ff0b0713875d
-# ╠═ef17d91f-04c5-43db-811e-d228495384dc
-# ╠═b7831999-3268-40fc-83d3-cd1290beaa4c
-# ╠═5430d55c-d2a1-4312-8d23-eda17be9b08f
 # ╠═5328c6f3-2ae7-4449-a2a2-b6803cec0dcc
 # ╠═dbfb23cb-5385-4115-8adf-8fe8167629ee
 # ╟─822a3646-be9d-4b1c-a189-550bd8b56ab7
@@ -2149,6 +2182,10 @@ version = "1.4.1+1"
 # ╟─57853a4a-ca67-4537-8cd0-177c677acc1c
 # ╠═762a90fe-8ee7-409e-b29e-e721e5fa3931
 # ╟─cdfb638b-a04c-482c-9206-47f7dfd63766
+# ╠═0fdafbdc-a6aa-42a6-a899-41b351b5e7e8
+# ╠═c5673bfa-d2b0-4893-ad88-42a5b81f27b4
+# ╠═e4a76493-9aea-4379-9a56-6a9b9e8d6b54
+# ╠═13f52ec2-16b9-41a5-9560-177ca827a72e
 # ╠═319d784b-c62d-4f28-a5b3-ebf89c892afc
 # ╠═3153ba89-f2d4-4e31-9e79-00ec5ecbb91c
 # ╠═b79405c3-42d1-4289-bbc3-67b6eae2b135

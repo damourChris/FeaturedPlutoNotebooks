@@ -150,10 +150,7 @@ Here is a plot to show the stopping times of the numbers for up to 1000.
 md"# Interactive Visualization"
 
 # ╔═╡ 0865f8a3-a959-481b-a9ae-adbca78a2749
-begin
-		window_height = 700.0
-		window_width = 700.0
-end
+window_height,window_width = (700.0, 700.0);
 
 # ╔═╡ 57853a4a-ca67-4537-8cd0-177c677acc1c
 md"Interesting Values to try out:

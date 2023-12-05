@@ -315,6 +315,20 @@ end
 	end
 end
 
+# ╔═╡ 31a7994d-13e0-440a-8279-5f19d7d0933f
+@kwdef struct NumberFieldParameter{T}
+	lb::T = 0
+	ub::T = 100
+	step::T = 1
+	default::T = lb
+	label::String
+	alias::Symbol = Symbol(label)
+	function NumberFieldParameter(lb,ub,step,default, label, alias) 
+		 if ub < lb error("Invalid Bounds") end 
+		 return new{typeof(default)}(lb,ub,step,default,label,alias)
+	end
+end
+
 # ╔═╡ 25d2291f-f422-41e4-aa61-9000e13d34ad
 @kwdef struct CheckBoxParameter
 	label::String 
@@ -423,6 +437,25 @@ begin
 	graph_colors = [RGB(rand(3)...) 
 		               for i in 1:nv(g)]
 end;
+
+# ╔═╡ 5977a13d-93b8-4e51-8484-5b1882100c49
+function format_numberFieldParameter( params::Vector{NumberFieldParameter{T}};title::String,) where T
+	
+	return combine() do Child
+		
+		mds = [
+			md""" $(param.label): $(
+				Child(param.alias, PlutoUI.NumberField(param.lb:param.step:param.ub, default = param.default)) 
+			)"""
+			
+			for param in params
+		]
+		md"""
+		#### $title
+		$(mds)
+		"""
+	end
+end
 
 # ╔═╡ a7885279-3f73-4c5d-aeef-061dea1ce930
 function format_checkBoxParameter( params::Vector{CheckBoxParameter};title::String)
@@ -1912,10 +1945,12 @@ version = "1.4.1+1"
 # ╠═278572e6-5a74-4dad-b39b-68cc85e4339c
 # ╠═5683080b-7d4b-4e34-aa75-b3c68dc60314
 # ╠═43479204-cd12-40b4-a65f-16bf54aaddfe
+# ╠═31a7994d-13e0-440a-8279-5f19d7d0933f
 # ╠═25d2291f-f422-41e4-aa61-9000e13d34ad
 # ╠═1255f4cc-7448-40f6-83ba-0cca1637d1cf
 # ╠═7dac4da8-0877-4d07-b4d2-2164faeccfde
 # ╠═4dd44fbd-f26a-4b72-a580-842209b44f27
+# ╠═5977a13d-93b8-4e51-8484-5b1882100c49
 # ╠═a7885279-3f73-4c5d-aeef-061dea1ce930
 # ╠═2d98aed3-9a51-4225-b914-a20b19f43908
 # ╠═7baab6e9-31bb-4da5-8ab9-938546cc863e

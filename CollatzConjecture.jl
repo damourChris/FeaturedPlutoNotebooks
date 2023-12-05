@@ -37,8 +37,6 @@ begin
 	using PlutoHooks
 	using HypertextLiteral:@htl
 
-	
-
 	md"""
 	!!! info "Notebook Packages"
 		[PlutoUI](https://www.juliapackages.com/p/PlutoUI): Extension for Pluto to handle interactivity, provides the Sliders, Checkboxes and Color Picker. 
@@ -68,6 +66,9 @@ begin
 		[NetworkLayout](https://www.juliapackages.com/p/networklayout): Used to compute the layout of the graphs.
 	"""
 end
+
+# ╔═╡ e60fcc3e-312c-4546-9b04-e6b558ba752a
+TableOfContents()
 
 # ╔═╡ 5328c6f3-2ae7-4449-a2a2-b6803cec0dcc
 md"# The Collatz Conjecture"
@@ -145,6 +146,9 @@ Here is a plot to show the stopping times of the numbers for up to 1000.
 
 
 
+# ╔═╡ d0672735-8007-4a69-9fa5-0f40ac0685ea
+md"# Interactive Visualization"
+
 # ╔═╡ 0865f8a3-a959-481b-a9ae-adbca78a2749
 begin
 		window_height = 700.0
@@ -163,12 +167,18 @@ md"Interesting Values to try out:
 
 "
 
+# ╔═╡ dc1dba7c-8c0d-4609-882a-e5703c467fef
+md"# Generalize the collatz function"
+
 # ╔═╡ cdfb638b-a04c-482c-9206-47f7dfd63766
 md"# Appendix"
 
 # ╔═╡ 0fdafbdc-a6aa-42a6-a899-41b351b5e7e8
 md"## Packages Used"
 
+
+# ╔═╡ 9803f163-0027-4577-af8f-c66de195d182
+md"## Functions"
 
 # ╔═╡ 3153ba89-f2d4-4e31-9e79-00ec5ecbb91c
 """
@@ -258,6 +268,9 @@ function make_collatz_graph(initial_value::Int, max_orbit_distance::Int; P=2, a=
 	descend_tree!(g, record, tree)
 	return g, record
 end
+
+# ╔═╡ cf545d05-7846-4881-a532-33cb2c1972a4
+md"### Drawing functions"
 
 # ╔═╡ 5683080b-7d4b-4e34-aa75-b3c68dc60314
 begin
@@ -359,6 +372,9 @@ function draw_hailstone_sequences(hailstone_seqs::Vector{Vector{Int64}}, line_le
 		draw_hailstone_sequence(hailstone_seq, line_length, turn_scale; kwargs...)
 	end
 end
+
+# ╔═╡ f47eb656-67ec-4760-8906-713fa480cb47
+md"## Interactivity stuff"
 
 # ╔═╡ 43479204-cd12-40b4-a65f-16bf54aaddfe
 @kwdef struct SliderParameter{T} 
@@ -2159,13 +2175,14 @@ version = "1.4.1+1"
 """
 
 # ╔═╡ Cell order:
-# ╠═5328c6f3-2ae7-4449-a2a2-b6803cec0dcc
-# ╠═dbfb23cb-5385-4115-8adf-8fe8167629ee
+# ╟─e60fcc3e-312c-4546-9b04-e6b558ba752a
+# ╟─5328c6f3-2ae7-4449-a2a2-b6803cec0dcc
+# ╟─dbfb23cb-5385-4115-8adf-8fe8167629ee
 # ╟─822a3646-be9d-4b1c-a189-550bd8b56ab7
 # ╟─0bc0ea95-585d-43be-b7ac-c33a2a7417b4
-# ╠═81db5594-75c0-4bfb-8908-ef8084559123
-# ╠═e57da7e5-32bb-48a2-af27-5ac671cabdae
-# ╠═66fe673a-7679-4c55-bf59-146a8dd1241c
+# ╟─81db5594-75c0-4bfb-8908-ef8084559123
+# ╟─e57da7e5-32bb-48a2-af27-5ac671cabdae
+# ╟─66fe673a-7679-4c55-bf59-146a8dd1241c
 # ╟─6693800b-e2bc-46e4-b5f8-004184ef472b
 # ╟─75b9294e-43a4-48c4-b493-5d40027f3cd6
 # ╟─12d218ee-9a43-4647-a96b-c9252c665fa0
@@ -2175,32 +2192,37 @@ version = "1.4.1+1"
 # ╟─6a45247d-25db-445f-a687-191c0952c6c4
 # ╟─0fd7242c-46a1-4929-9c53-3c45768893b4
 # ╠═b5fb1fa3-a205-42e9-9fb7-2f3324dc23be
-# ╟─f21f1e3e-a3ab-458e-a101-ce824731f0b6
-# ╠═6d225dce-3362-4f5d-bba9-0b5312f6be5a
+# ╟─d0672735-8007-4a69-9fa5-0f40ac0685ea
+# ╟─6d225dce-3362-4f5d-bba9-0b5312f6be5a
 # ╟─a52781ec-98ba-4c0f-8f50-87d351a017b8
-# ╟─0865f8a3-a959-481b-a9ae-adbca78a2749
+# ╠═0865f8a3-a959-481b-a9ae-adbca78a2749
 # ╟─57853a4a-ca67-4537-8cd0-177c677acc1c
 # ╠═762a90fe-8ee7-409e-b29e-e721e5fa3931
+# ╟─dc1dba7c-8c0d-4609-882a-e5703c467fef
+# ╟─f21f1e3e-a3ab-458e-a101-ce824731f0b6
 # ╟─cdfb638b-a04c-482c-9206-47f7dfd63766
-# ╠═0fdafbdc-a6aa-42a6-a899-41b351b5e7e8
-# ╠═c5673bfa-d2b0-4893-ad88-42a5b81f27b4
-# ╠═e4a76493-9aea-4379-9a56-6a9b9e8d6b54
-# ╠═13f52ec2-16b9-41a5-9560-177ca827a72e
-# ╠═319d784b-c62d-4f28-a5b3-ebf89c892afc
-# ╠═3153ba89-f2d4-4e31-9e79-00ec5ecbb91c
-# ╠═b79405c3-42d1-4289-bbc3-67b6eae2b135
-# ╠═278572e6-5a74-4dad-b39b-68cc85e4339c
-# ╠═5683080b-7d4b-4e34-aa75-b3c68dc60314
+# ╟─0fdafbdc-a6aa-42a6-a899-41b351b5e7e8
+# ╟─c5673bfa-d2b0-4893-ad88-42a5b81f27b4
+# ╟─e4a76493-9aea-4379-9a56-6a9b9e8d6b54
+# ╟─13f52ec2-16b9-41a5-9560-177ca827a72e
+# ╟─9803f163-0027-4577-af8f-c66de195d182
+# ╟─319d784b-c62d-4f28-a5b3-ebf89c892afc
+# ╟─3153ba89-f2d4-4e31-9e79-00ec5ecbb91c
+# ╟─b79405c3-42d1-4289-bbc3-67b6eae2b135
+# ╟─cf545d05-7846-4881-a532-33cb2c1972a4
+# ╟─278572e6-5a74-4dad-b39b-68cc85e4339c
+# ╟─5683080b-7d4b-4e34-aa75-b3c68dc60314
+# ╟─f47eb656-67ec-4760-8906-713fa480cb47
 # ╠═43479204-cd12-40b4-a65f-16bf54aaddfe
 # ╠═31a7994d-13e0-440a-8279-5f19d7d0933f
 # ╠═25d2291f-f422-41e4-aa61-9000e13d34ad
 # ╠═1255f4cc-7448-40f6-83ba-0cca1637d1cf
-# ╠═7dac4da8-0877-4d07-b4d2-2164faeccfde
-# ╠═4dd44fbd-f26a-4b72-a580-842209b44f27
-# ╠═5977a13d-93b8-4e51-8484-5b1882100c49
-# ╠═a7885279-3f73-4c5d-aeef-061dea1ce930
-# ╠═2d98aed3-9a51-4225-b914-a20b19f43908
-# ╠═90dc6dd4-c4f3-4e4d-8e91-0fecafd258e1
+# ╟─7dac4da8-0877-4d07-b4d2-2164faeccfde
+# ╟─4dd44fbd-f26a-4b72-a580-842209b44f27
+# ╟─5977a13d-93b8-4e51-8484-5b1882100c49
+# ╟─a7885279-3f73-4c5d-aeef-061dea1ce930
+# ╟─2d98aed3-9a51-4225-b914-a20b19f43908
+# ╟─90dc6dd4-c4f3-4e4d-8e91-0fecafd258e1
 # ╠═7baab6e9-31bb-4da5-8ab9-938546cc863e
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

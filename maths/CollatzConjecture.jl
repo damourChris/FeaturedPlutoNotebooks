@@ -1,6 +1,19 @@
 ### A Pluto.jl notebook ###
 # v0.19.32
 
+#> [frontmatter]
+#> licence_url = "https://github.com/JuliaPluto/featured/blob/2a6a9664e5428b37abe4957c1dca0994f4a8b7fd/LICENSES/Unlicense"
+#> image = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Collatz_Conjecture_Vizualization.png/600px-Collatz_Conjecture_Vizualization.png?20231214223051"
+#> title = "Visualizing the Collatz Conjecture "
+#> tags = ["maths", "interactive visualization", "collatz conjecture ", "edmond harris"]
+#> date = "2023-12-14"
+#> description = "Explore this cool math problem and create your own visualization!"
+#> license = "Unlicense"
+#> 
+#>     [[frontmatter.author]]
+#>     name = "Chris Damour"
+#>     url = "https://github.com/damourChris"
+
 using Markdown
 using InteractiveUtils
 
@@ -78,16 +91,6 @@ $(Resource("https://static.wixstatic.com/media/a27d24_08a39705c99d40c6b764c9b8d6
 Visualization of the Collatz Conjecture by [Edmund Harris](https://maxwelldemon.com/)
 # The Collatz Conjecture
 > "Mathematics may not be ready for such problems." - Paul Erdos
-"""
-
-# ╔═╡ dbfb23cb-5385-4115-8adf-8fe8167629ee
-md"""
-!!! tip "About this notebook"
-	**Summary:** This notebook introduces the Collatz Conjecture, explores some aspects of the problem and includes a interactive visualization of the sequences generated. 
-
-	**Topics:** Collatz Conjecture, Mathematical Visualization
-
-	**Author:** Chris Damour
 """
 
 # ╔═╡ 822a3646-be9d-4b1c-a189-550bd8b56ab7
@@ -239,7 +242,9 @@ do_generalize_collatz ? md"""
 md"# Gallery"
 
 # ╔═╡ 5655a706-2c53-4763-b8c5-e21aa3e72371
-md"While playing around with the viusalization, I stumbled into some nice patterns that I wanted to share with you! I added the parameters in case you want to recreate them. Enjoy :)"
+md"While playing around with the viusalization, I stumbled into some nice patterns that I wanted to share with you! I added the parameters in case you want to recreate them. Enjoy :)
+
+*(Note that the parameters are highly dependent on the size of the canvas so it might not be trivial to reproduced)*"
 
 # ╔═╡ b7b80bd8-7a16-4483-9b8f-b6a8da531b0a
 
@@ -680,7 +685,7 @@ A struct to bundle the parameters and the generated image together.
 	
 	function CollatzVisualization(viz_parameters, collatz_parameters,imgdata, shortcut,ultra_shortcut, notes)
 		if((shortcut || ultra_shortcut)  &&  (collatz_parameters.P != 2 || collatz_parameters.a != 3 || collatz_parameters.b == 1)) 
-			@warn "Shortcut is set to true, setting collatz_parameters to default values..." 
+			@info "Custom style is applied, running with default collatz parameters.." 
 			collatz_parameters = (P = 2, a=3, b=1)
 		end
 		# convert to struct not supplied 
@@ -722,6 +727,26 @@ end
 
 # ╔═╡ b7161895-ba79-4b99-b2f1-eda7484708da
 begin
+
+	viz_thumbnail = CollatzVisualization(
+		viz_parameters = (
+				num_traject = 10000,
+				line_length = 15,
+				turn_scale = 9.3,
+				window_width = 500.0,
+				window_height = 500.0, 
+				x_start = 100.0, 
+				y_start = 0.0,
+				init_angle = 270, 
+				stroke_width = 2.0, 
+				stroke_color = RGB(38/255,148/255,30/255), 
+				background_color = RGB(188/255, 251/255, 199/255), 
+				vary_shade=true,
+				random_shade=false
+			),
+		ultra_shortcut = true,
+		
+	)
 
 	viz_5_5_5 = CollatzVisualization(
 		viz_parameters = (
@@ -861,7 +886,7 @@ begin
 		)
 	)
 	
-	gallery_vizs = [viz_5_5_5, viz_3_1_7,viz_1_1_3,viz_3_7_2, hex_grid, lil_guy,]
+	gallery_vizs = [viz_thumbnail, viz_5_5_5, viz_3_1_7,viz_1_1_3,viz_3_7_2, hex_grid, lil_guy,]
 	
 end;
 
@@ -1020,32 +1045,6 @@ end
 
 )
 
-# ╔═╡ 0865f8a3-a959-481b-a9ae-adbca78a2749
-begin
-	window_size_sliders = @bind window_size_parameters format_sliderParameter(
-		title="Window Size",
-	[
-		SliderParameter(
-			lb=100.0,
-			ub=10000.0,
-			default=700.0,
-			alias = :window_height, 
-			label = "Height", 
-		),
-		SliderParameter(
-			lb=100.0,
-			ub=10000.0,
-			default=500.0,
-			alias=:window_width, 
-			label="Width")
-	]
-	)
-end
-
-
-# ╔═╡ 8a64e9e3-477e-4a7e-97f7-61cf5e428731
-(; window_height,window_width) = window_size_parameters;
-
 # ╔═╡ 5ba5f885-1de1-4058-91bf-35e1b05d1941
 viz_sliders = @bind viz_parameters format_sliderParameter(
 			title = "Visualization Options:", 
@@ -1060,7 +1059,7 @@ viz_sliders = @bind viz_parameters format_sliderParameter(
 				),
 				SliderParameter(
 					lb = 1,
-					ub = 100, 
+					ub = 150, 
 					default = 20,
 					alias=:line_length, 
 					label="Step"),
@@ -1071,45 +1070,6 @@ viz_sliders = @bind viz_parameters format_sliderParameter(
 					step = 0.1, 
 					alias = :turn_scale, 
 					label = "Rotation Angle (in degrees)"
-				),
-			]
-		);
-
-# ╔═╡ 7dbfb4dc-c9d0-464d-83b2-18db90d76878
-viz_specs_sliders = @bind viz_specs_parameters format_sliderParameter(
-			title = "Image Options:", 
-			[
-				SliderParameter(
-					lb = 0,
-					ub = 360,
-					default = 20.0,
-					step = 0.1,
-					alias = :init_angle, 
-					label = "Image Rotation (in degrees)"
-				),
-				SliderParameter(
-					lb = 0,
-					ub = window_width, 
-					default = window_width/2, 
-					step = 0.1, 
-					alias = :x_start, 
-					label = "Starting point (X)"
-				),
-				SliderParameter(
-					lb = 0, 
-					ub = window_height,
-					default = window_height, 
-					step = 0.1, 
-					alias = :y_start, 
-					label = "Starting point (Y)"
-				),
-				SliderParameter(
-					lb = 1, 
-					ub = 50,
-					default = 5.0, 
-					step = 0.1, 
-					alias = :stroke_width, 
-					label = "Stroke Width"
 				),
 			]
 		);
@@ -1235,6 +1195,71 @@ function format_numberFieldParameter( params::Vector{NumberFieldParameter{T}};ti
 		"""
 	end
 end
+
+# ╔═╡ 0865f8a3-a959-481b-a9ae-adbca78a2749
+begin
+	window_size_sliders = @bind window_size_parameters format_numberFieldParameter(
+		title="Window Size",
+	[
+		NumberFieldParameter(
+			lb=100.0,
+			ub=10000.0,
+			default=700.0,
+			alias = :window_height, 
+			label = "Height", 
+		),
+		NumberFieldParameter(
+			lb=100.0,
+			ub=10000.0,
+			default=500.0,
+			alias=:window_width, 
+			label="Width")
+	]
+	)
+end
+
+
+# ╔═╡ 8a64e9e3-477e-4a7e-97f7-61cf5e428731
+(; window_height,window_width) = window_size_parameters;
+
+# ╔═╡ 7dbfb4dc-c9d0-464d-83b2-18db90d76878
+viz_specs_sliders = @bind viz_specs_parameters format_sliderParameter(
+			title = "Image Options:", 
+			[
+				SliderParameter(
+					lb = 0,
+					ub = 360,
+					default = 20.0,
+					step = 0.1,
+					alias = :init_angle, 
+					label = "Image Rotation (in degrees)"
+				),
+				SliderParameter(
+					lb = 0,
+					ub = window_width, 
+					default = window_width/2, 
+					step = 0.1, 
+					alias = :x_start, 
+					label = "Starting point (X)"
+				),
+				SliderParameter(
+					lb = 0, 
+					ub = window_height,
+					default = window_height, 
+					step = 0.1, 
+					alias = :y_start, 
+					label = "Starting point (Y)"
+				),
+				SliderParameter(
+					lb = 1, 
+					ub = 50,
+					default = 5.0, 
+					step = 0.1, 
+					alias = :stroke_width, 
+					label = "Stroke Width"
+				),
+			]
+		);
 
 # ╔═╡ a7885279-3f73-4c5d-aeef-061dea1ce930
 function format_checkBoxParameter( params::Vector{CheckBoxParameter};title::String)
@@ -3205,7 +3230,6 @@ version = "1.4.1+1"
 # ╔═╡ Cell order:
 # ╟─e60fcc3e-312c-4546-9b04-e6b558ba752a
 # ╟─5328c6f3-2ae7-4449-a2a2-b6803cec0dcc
-# ╟─dbfb23cb-5385-4115-8adf-8fe8167629ee
 # ╟─822a3646-be9d-4b1c-a189-550bd8b56ab7
 # ╟─0bc0ea95-585d-43be-b7ac-c33a2a7417b4
 # ╟─bdd54208-1f66-45da-9e67-9479cc460863

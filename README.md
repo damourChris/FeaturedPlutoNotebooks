@@ -1,5 +1,5 @@
 # FeaturedPlutoNotebooks
-A collection of cool Pluto Notebooks to be featured on Plutojl.org
+A collection of cool Pluto Notebooks to be featured on [Plutojl.org](https://featured.plutojl.org/)
 
 ## Notebooks
 

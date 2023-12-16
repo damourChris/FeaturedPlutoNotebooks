@@ -5,7 +5,7 @@ A collection of cool Pluto Notebooks to be featured on [Plutojl.org](https://fea
 
 ### Maths
 
-- [X] CollatzConjecture: Explore and interactively visualize the Collatz conjecture and its generalization!
+- [X] [CollatzConjecture](https://featured.plutojl.org/math/collatzconjecture): Explore and interactively visualize the Collatz conjecture and its generalization!
   - Tags: collatz conjecture, interactive visualization, edmond harris 
 - [ ]  JuliaSets: Discover the sister of the Mandelbrot set, the Julia set in Julia!!
   - Tags: julia sets, fractal, mandelbrot set, interactive visualization

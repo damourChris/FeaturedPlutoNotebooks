@@ -14,7 +14,7 @@ A collection of cool Pluto Notebooks to be featured on [Plutojl.org](https://fea
   
 
 ### Biology 
-- [ ] ZombieAttackWithMTK
+- [X] ZombieAttackWithMTK
   - **Description:**  Survive a zombie attack and learn to use ModelingToolkit to model complex dynamical systems.
   - **Tags:** dynamical systems, modelingtoolkit, zombie outbreak, modeling
 - [ ] GenomeBrowswer
